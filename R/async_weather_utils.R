@@ -4,6 +4,7 @@
 
 library(dplyr)
 library(lubridate)
+library(pins)
 
 # Returns weather obs for KWASEATT2743 station
 getSeattleWeather <- function() {
@@ -44,4 +45,31 @@ updateBoard <- function(
             type = "rds",
             versioned = TRUE,
             metadata = list("load_time" = time_now))
+}
+
+# Returns last 48 hours of Seattle weather with a subset of variables
+cleanSeattleWeather <- function(
+    df = weather_data
+) {
+  df %>% select("Time" = obsTimeLocal,
+                "UV" = uv,
+                "Humidity" = humidity,
+                "Temperature" = imperial.temp,
+                "Pressure" = imperial.pressure,
+                "Precip" = imperial.precipTotal) %>%
+    arrange(desc(Time)) %>% 
+    head(n=48)
+}
+
+# Subset to specific variables. Always include:
+# - obsTimeLocal,
+# in addition to variable
+getVariableData <- function(
+    df = NULL,
+    vars = NULL) {
+  df <- select(df,
+               Time,
+               all_of(vars))
+  
+  return(df)
 }

@@ -1,0 +1,13 @@
+name: seattle_weather_dash
+title:
+username: randre
+account: randre
+server: posit2
+hostUrl: http://posit2:3939/__api__
+appId: 12
+bundleId: 33
+url: http://posit2:3939/seattle_weather/
+when: 1677205160.16364
+lastSyncTime: 1677205160.16365
+asMultiple: FALSE
+asStatic: FALSE

@@ -11,31 +11,29 @@ library(DT)
 library(dplyr)
 library(pins)
 source("async_weather_utils.R")
-
-board <- getBoard()
-weather_data <- pin_read(board, name = "randre/Seattle_Weather_Data")
-
-# Clean the variable names and subset the last 48 hours
-clean_seattle_weather <- cleanSeattleWeather(weather_data)
-
-# Define the variables for the selector (drop the Time vraiable)
-weather_vars <- names(clean_seattle_weather)
-weather_vars <- weather_vars[weather_vars != "Time"]
 ```
 
 Column {.sidebar}
 -----------------------------------------------------------------------
 
 ```{r}
+# Get the data, use a reactive 
+board <- getBoard()
+weather_data <- pin_reactive_read(board, name = "randre/Seattle_Weather_Data", interval = 1000)
+
+# Create a selector
+weather_vars <- c( "UV", "Humidity", "Temperature", "Pressure", "Precip")
+
 selectInput(inputId = "variable",
             label = h4("Choose Variable"),
             choices = weather_vars,
             selected = "Temperature"
 )
 
-# Reactive data
+# Reactive data based on selector input
 variable_data <- reactive({
-  getVariableData(clean_seattle_weather, vars = input$variable)
+  # Also cleans the variable names and subsets to the last 48 hours
+  getVariableData(cleanSeattleWeather(weather_data()), vars = input$variable)
 })
 
 ```
@@ -67,8 +65,7 @@ renderDT(rownames = FALSE,
                         dom = 't',
                         ordering=F,
                         scrollY = "350px"), 
-         {clean_seattle_weather %>% arrange(desc("Time")) %>%
+         {cleanSeattleWeather(weather_data()) %>% arrange(desc("Time")) %>%
              mutate("Time" = as.character(`Time`))
          })
 ```
-

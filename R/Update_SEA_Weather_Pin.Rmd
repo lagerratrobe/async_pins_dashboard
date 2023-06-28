@@ -25,7 +25,8 @@ pinned_data <- pin_read(board, name = "randre/Seattle_Weather_Data")
 # Create a timestamp
 current_time <- as.character(lubridate::now())
 
-# Check to see if there are new records, if there are, refresh the pinned_data with live_data
+# Check to see if there are new records, 
+# if there are, refresh the pinned_data with live_data
 if ( nrow(live_data) > nrow(pinned_data) ) {
   updateBoard(board = board, df = live_data, time_now = current_time)
   print(sprintf("Last updated randre/Seattle_Weather_Data Pins at %s", current_time))

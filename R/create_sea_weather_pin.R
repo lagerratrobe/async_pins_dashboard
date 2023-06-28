@@ -2,13 +2,15 @@
 library(dplyr)
 library(lubridate)
 library(pins)
-source("pins_update/async_weather_utils.R")
+source("R/async_weather_utils.R")
 
 # Pull weather data in from Github and filter to SEA station
 live_data <- getSeattleWeather()
 
 # Create the pin and write data to it
-board <- getBoard()
+# Connect to a pin board on Connect
+board <- board_connect(auth = "envvar")
+
 current_time <- as.character(lubridate::now())
 
 # Write data to server
